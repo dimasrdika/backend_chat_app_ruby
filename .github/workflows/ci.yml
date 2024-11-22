@@ -65,6 +65,10 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      # Memberikan izin eksekusi pada bin/rubocop
+      - name: Give execute permission to rubocop
+        run: chmod +x bin/rubocop
+
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
