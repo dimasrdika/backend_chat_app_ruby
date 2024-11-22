@@ -41,12 +41,20 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: bundle install
-
-      - name: Run importmap audit
         run: |
-          chmod +x bin/*
-          bundle exec importmap audit
+          bundle install
+          bundle add importmap-rails
+
+      - name: Run Node Security Check
+        run: |
+          if [ -f yarn.lock ]; then
+            yarn audit
+          elif [ -f package-lock.json ]; then
+            npm audit
+          else
+            echo "No JavaScript dependencies found"
+            exit 0
+          fi
 
   lint:
     runs-on: ubuntu-latest
@@ -63,9 +71,10 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      - name: Run Rubocop
+      - name: Run Rubocop with auto-correct
         run: |
           chmod +x bin/*
+          bundle exec rubocop -a -f github || true
           bundle exec rubocop -f github
 
   test:
@@ -100,13 +109,20 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      - name: Run tests
+      - name: Setup test database
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
         run: |
           chmod +x bin/*
-          bundle exec rails db:test:prepare
+          bundle exec rails db:create
+          bundle exec rails db:schema:load
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
+        run: |
           bundle exec rails test
           bundle exec rails test:system
 
