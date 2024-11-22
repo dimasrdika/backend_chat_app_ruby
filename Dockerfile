@@ -31,7 +31,7 @@ RUN bundle install && \
 COPY . .
 
 # Set environment variables for build
-ENV SECRET_KEY_BASE=dummy-key-for-precompilation \
+ENV SECRET_KEY_BASE=b2dd74a3280b663edd9b8a4308903cf6920ee8d3831ed21c1536a879ef1931cc05d242a82d150543e0772e99547071bc337ea911c88cd0e51ba0752a2f04acce3 \
     RAILS_MASTER_KEY=332001d594313e34ea760e29b66ee93e
 
 # Precompile assets
