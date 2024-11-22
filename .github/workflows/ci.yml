@@ -19,7 +19,11 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      # Tambahkan langkah ini untuk memberikan izin eksekusi pada bin/brakeman
+      # Tambahkan langkah ini untuk memverifikasi Ruby terinstal
+      - name: Verify Ruby installation
+        run: ruby -v
+
+      # Tambahkan langkah ini untuk memberikan izin eksekusi pada brakeman
       - name: Give execute permission to brakeman
         run: chmod +x bin/brakeman
 
