@@ -19,10 +19,6 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      # Tambahkan langkah ini untuk memverifikasi Ruby terinstal
-      - name: Verify Ruby installation
-        run: ruby -v
-
       # Memeriksa dan memperbaiki shebang di bin/brakeman
       - name: Fix shebang in bin/brakeman
         run: |
@@ -30,7 +26,7 @@ jobs:
             sed -i '1s|.*|#!/usr/bin/env ruby|' bin/brakeman
           fi
 
-      # Tambahkan langkah ini untuk memberikan izin eksekusi pada brakeman
+      # Memberikan izin eksekusi pada brakeman
       - name: Give execute permission to brakeman
         run: chmod +x bin/brakeman
 
@@ -49,6 +45,10 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      # Memberikan izin eksekusi pada bin/importmap
+      - name: Give execute permission to importmap
+        run: chmod +x bin/importmap
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
