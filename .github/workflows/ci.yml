@@ -16,15 +16,16 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: ".ruby-version"
           bundler-cache: true
 
-      # Berikan izin eksekusi pada file-file bin/
-      - name: Give execute permission to brakeman
-        run: chmod +x bin/brakeman
+      - name: Install dependencies
+        run: bundle install
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+      - name: Give execute permission to brakeman
+        run: |
+          chmod +x bin/*
+          bundle exec brakeman --no-pager
 
   scan_js:
     runs-on: ubuntu-latest
@@ -36,15 +37,16 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: ".ruby-version"
           bundler-cache: true
 
-      # Berikan izin eksekusi pada file importmap
-      - name: Give execute permission to importmap
-        run: chmod +x bin/importmap
+      - name: Install dependencies
+        run: bundle install
 
-      - name: Scan for security vulnerabilities in JavaScript dependencies
-        run: bin/importmap audit
+      - name: Run importmap audit
+        run: |
+          chmod +x bin/*
+          bundle exec importmap audit
 
   lint:
     runs-on: ubuntu-latest
@@ -55,22 +57,36 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: ".ruby-version"
           bundler-cache: true
 
-      # Berikan izin eksekusi pada rubocop
-      - name: Give execute permission to rubocop
-        run: chmod +x bin/rubocop
+      - name: Install dependencies
+        run: bundle install
 
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
+      - name: Run Rubocop
+        run: |
+          chmod +x bin/*
+          bundle exec rubocop -f github
 
   test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,17 +94,21 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: ".ruby-version"
           bundler-cache: true
 
-      # Berikan izin eksekusi pada rails
-      - name: Give execute permission to rails
-        run: chmod +x bin/rails
+      - name: Install dependencies
+        run: bundle install
 
       - name: Run tests
         env:
           RAILS_ENV: test
-        run: bin/rails db:test:prepare test test:system
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
+        run: |
+          chmod +x bin/*
+          bundle exec rails db:test:prepare
+          bundle exec rails test
+          bundle exec rails test:system
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
