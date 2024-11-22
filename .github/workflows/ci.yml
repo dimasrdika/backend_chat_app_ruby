@@ -19,14 +19,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      # Memeriksa dan memperbaiki shebang di bin/brakeman
-      - name: Fix shebang in bin/brakeman
-        run: |
-          if head -n 1 bin/brakeman | grep -q 'ruby.exe'; then
-            sed -i '1s|.*|#!/usr/bin/env ruby|' bin/brakeman
-          fi
+      - name: Check Ruby version
+        run: ruby -v # Verifikasi Ruby terinstal dengan benar
 
-      # Memberikan izin eksekusi pada brakeman
       - name: Give execute permission to brakeman
         run: chmod +x bin/brakeman
 
@@ -46,7 +41,6 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      # Memberikan izin eksekusi pada bin/importmap
       - name: Give execute permission to importmap
         run: chmod +x bin/importmap
 
@@ -65,9 +59,11 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      # Memberikan izin eksekusi pada bin/rubocop
       - name: Give execute permission to rubocop
         run: chmod +x bin/rubocop
+
+      - name: Check Ruby version
+        run: ruby -v # Verifikasi Ruby terinstal dengan benar
 
       - name: Lint code for consistent style
         run: bin/rubocop -f github
