@@ -42,7 +42,8 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
-
+COPY config/master.key config/master.key
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
