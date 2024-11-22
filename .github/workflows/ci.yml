@@ -19,9 +19,7 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Check Ruby version
-        run: ruby -v # Verifikasi Ruby terinstal dengan benar
-
+      # Berikan izin eksekusi pada file-file bin/
       - name: Give execute permission to brakeman
         run: chmod +x bin/brakeman
 
@@ -41,6 +39,7 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      # Berikan izin eksekusi pada file importmap
       - name: Give execute permission to importmap
         run: chmod +x bin/importmap
 
@@ -59,11 +58,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      # Berikan izin eksekusi pada rubocop
       - name: Give execute permission to rubocop
         run: chmod +x bin/rubocop
-
-      - name: Check Ruby version
-        run: ruby -v # Verifikasi Ruby terinstal dengan benar
 
       - name: Lint code for consistent style
         run: bin/rubocop -f github
@@ -83,6 +80,10 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      # Berikan izin eksekusi pada rails
+      - name: Give execute permission to rails
+        run: chmod +x bin/rails
 
       - name: Run tests
         env:
