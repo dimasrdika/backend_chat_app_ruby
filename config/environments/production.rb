@@ -69,6 +69,8 @@ Rails.application.configure do
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
   config.require_master_key = true
+  config.secret_key_base = ENV["SECRET_KEY_BASE"]
+
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com
