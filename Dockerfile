@@ -1,12 +1,6 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t server .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name server server
-
-# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
-
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=3.3.6
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
@@ -42,8 +36,13 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
-COPY config/master.key config/master.key
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+# Hapus baris COPY master.key karena kita akan menggunakan environment variable
+# COPY config/master.key config/master.key
+
+# Precompile assets menggunakan dummy secret key
+ARG SECRET_KEY_BASE_DUMMY=1
+RUN bundle exec rails assets:precompile
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
@@ -51,12 +50,6 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN chmod +x bin/* && \
     sed -i "s/\r$//g" bin/* && \
     sed -i 's/ruby\.exe$/ruby/' bin/*
-
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-
 
 # Final stage for app image
 FROM base
