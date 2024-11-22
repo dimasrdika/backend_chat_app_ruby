@@ -3,7 +3,10 @@
   "build": {
     "builder": "NIXPACKS",
     "nixpacks": {
-      "postBuild": ["bundle install", "bundle exec brakeman --no-pager"]
+      "postBuild": [
+        "bundle install",
+        "bundle exec brakeman --no-pager"
+      ]
     }
   },
   "deploy": {
