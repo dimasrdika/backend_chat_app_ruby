@@ -43,7 +43,6 @@ RUN bundle install && \
 COPY . .
 
 
-COPY config/master.key config/master.key
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
