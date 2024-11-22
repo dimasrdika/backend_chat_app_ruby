@@ -36,11 +36,11 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
-# Hapus baris COPY master.key karena kita akan menggunakan environment variable
-# COPY config/master.key config/master.key
+# Set dummy secret key base for asset precompilation
+ENV SECRET_KEY_BASE=dummy-key-for-precompilation
+ENV RAILS_MASTER_KEY=332001d594313e34ea760e29b66ee93e
 
-# Precompile assets menggunakan dummy secret key
-ARG SECRET_KEY_BASE_DUMMY=1
+# Precompile assets
 RUN bundle exec rails assets:precompile
 
 # Precompile bootsnap code for faster boot times
