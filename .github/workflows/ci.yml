@@ -80,17 +80,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
       - name: Install system dependencies
         run: |
@@ -109,20 +98,11 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      - name: Setup test database
-        env:
-          RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
-        run: |
-          chmod +x bin/*
-          bundle exec rails db:create
-          bundle exec rails db:schema:load
-
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
         run: |
+          chmod +x bin/*
           bundle exec rails test
           bundle exec rails test:system
 

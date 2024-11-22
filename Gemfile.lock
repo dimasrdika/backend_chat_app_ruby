@@ -325,6 +325,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 8.0.0)
   redis
+  rubocop
   rubocop-rails-omakase
   selenium-webdriver
   stimulus-rails
