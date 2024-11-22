@@ -23,6 +23,13 @@ jobs:
       - name: Verify Ruby installation
         run: ruby -v
 
+      # Memeriksa dan memperbaiki shebang di bin/brakeman
+      - name: Fix shebang in bin/brakeman
+        run: |
+          if head -n 1 bin/brakeman | grep -q 'ruby.exe'; then
+            sed -i '1s|.*|#!/usr/bin/env ruby|' bin/brakeman
+          fi
+
       # Tambahkan langkah ini untuk memberikan izin eksekusi pada brakeman
       - name: Give execute permission to brakeman
         run: chmod +x bin/brakeman
