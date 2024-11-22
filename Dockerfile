@@ -32,7 +32,7 @@ COPY . .
 
 # Set environment variables for build
 ENV SECRET_KEY_BASE=b2dd74a3280b663edd9b8a4308903cf6920ee8d3831ed21c1536a879ef1931cc05d242a82d150543e0772e99547071bc337ea911c88cd0e51ba0752a2f04acce3 \
-    RAILS_MASTER_KEY=332001d594313e34ea760e29b66ee93e
+    RAILS_MASTER_KEY=349ccf93a42ab2a483540ffa54ae18f7acd27327686649f9f5bdc8208f403860a791278c64882ee4abba67f457cf1bcbb2a17372a39b80db2cf9e6f6abccf1df
 
 # Precompile assets
 RUN bundle exec rails assets:precompile && \
